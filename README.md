@@ -1,3 +1,52 @@
+# Laravel REST API Docker Setup
+
+This project is a Laravel 12 REST API running in Docker with MySQL and phpMyAdmin.
+
+## Getting Started
+
+### Prerequisites
+- Docker
+- Docker Compose
+
+### Setup
+1. Clone the repository:
+	```sh
+	git clone <your-repo-url>
+	cd laravel-restapi
+	```
+2. Copy the example environment file:
+	```sh
+	cp .env.example .env
+	```
+3. Start the containers:
+	```sh
+	docker compose up -d
+	```
+4. Start the Laravel development server:
+	```sh
+	docker compose exec web php artisan serve --host=0.0.0.0 --port=8000
+	```
+5. Visit your app at [http://127.0.0.1:8000](http://127.0.0.1:8000)
+
+### Database
+- MySQL is available at `db:3306` inside Docker.
+- phpMyAdmin is available at [http://127.0.0.1:8081](http://127.0.0.1:8081)
+  - Server: `db`
+  - Username: `user`
+  - Password: `pass`
+
+### Running Migrations
+```sh
+docker compose exec web php artisan migrate
+```
+
+### Useful Commands
+- Clear config cache: `docker compose exec web php artisan config:clear`
+- Clear app cache: `docker compose exec web php artisan cache:clear`
+
+---
+
+For any issues, please open an issue in this repository.
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
