@@ -1,3 +1,113 @@
+## Database Migrations: Docker vs Host
+
+**If using Docker (recommended):**
+
+Run migrations inside the container to ensure the correct environment and file paths:
+
+```sh
+docker compose exec web php artisan migrate
+```
+
+**If running artisan on your host:**
+
+Update your `.env`:
+
+```
+DB_CONNECTION=sqlite
+DB_DATABASE=database/database.sqlite
+```
+
+This matches the file path as seen from your host, not from inside the container.
+
+**Tip:** For MySQL, always use Docker and the provided `.env` settings.
+## Useful Docker Commands & Examples
+
+Here are some real-world Docker and Laravel commands used in this project:
+
+- **Start all containers:**
+	```sh
+	docker compose up -d
+	```
+- **Stop all containers:**
+	```sh
+	docker compose down
+	```
+- **Rebuild the web container (after Dockerfile changes):**
+	```sh
+	docker compose build web
+	```
+- **Restart a single container (e.g., phpmyadmin):**
+	```sh
+	docker compose restart phpmyadmin
+	```
+- **View container logs:**
+	```sh
+	docker compose logs -f
+	```
+- **Run Laravel artisan commands:**
+	```sh
+	docker compose exec web php artisan <command>
+	# Example: docker compose exec web php artisan migrate
+	# Example: docker compose exec web php artisan config:clear
+	# Example: docker compose exec web php artisan cache:clear
+	# Example: docker compose exec web php artisan serve --host=0.0.0.0 --port=8000
+	```
+- **Install Composer dependencies:**
+	```sh
+	docker compose exec web composer install
+	```
+- **Access a shell in the web container:**
+	```sh
+	docker compose exec web bash
+	```
+- **Check PHP extensions in the container:**
+	```sh
+	docker compose exec web php -m | grep pdo
+	docker compose exec web php -i | grep -i sqlite
+	```
+- **Check file permissions inside the container:**
+	```sh
+	docker compose exec web ls -l /var/www/html/database/
+	docker compose exec web chmod 664 /var/www/html/database/database.sqlite
+	```
+- **Access phpMyAdmin:**
+	Open [http://127.0.0.1:8081](http://127.0.0.1:8081) in your browser.
+	- Username: root or user
+	- Password: root or pass
+
+These commands cover most development and debugging scenarios for a Laravel project running in Docker.
+## Useful Docker Commands
+
+All commands should be run from the project root.
+
+- **Start all containers:**
+	```sh
+	docker compose up -d
+	```
+- **Stop all containers:**
+	```sh
+	docker compose down
+	```
+- **View container logs:**
+	```sh
+	docker compose logs -f
+	```
+- **Run Laravel artisan commands:**
+	```sh
+	docker compose exec web php artisan <command>
+	# Example: docker compose exec web php artisan migrate
+	```
+- **Install Composer dependencies:**
+	```sh
+	docker compose exec web composer install
+	```
+- **Access a shell in the web container:**
+	```sh
+	docker compose exec web bash
+	```
+- **Access phpMyAdmin:**
+	Open [http://127.0.0.1:8081](http://127.0.0.1:8081) in your browser.
+
 # Laravel REST API Docker Setup
 
 This project is a Laravel 12 REST API running in Docker with MySQL and phpMyAdmin.
