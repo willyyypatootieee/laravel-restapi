@@ -1,158 +1,148 @@
-## Database Migrations: Docker vs Host
 
-**If using Docker (recommended):**
+# Laravel REST API (Dockerized)
 
-Run migrations inside the container to ensure the correct environment and file paths:
+This project is a Laravel 12 REST API running in Docker with MySQL and phpMyAdmin. You can also use SQLite for local development.
+
+---
+
+## 🆕 Fresh Install (SQLite Example)
+
+If you want to use SQLite for local development, follow these steps to avoid common errors:
+
+### On your host (for quick testing, not recommended for Docker):
 
 ```sh
+php artisan key:generate
+touch database/database.sqlite
+php artisan migrate
+# If you see an error about missing database file, create it as above and rerun migrate.
+```
+
+### Inside Docker (recommended):
+
+```sh
+docker compose exec web php artisan key:generate
+docker compose exec web touch /var/www/html/database/database.sqlite
 docker compose exec web php artisan migrate
 ```
 
-**If running artisan on your host:**
+**If you get an error like:**
+> Database file at path [/var/www/html/database/database.sqlite] does not exist.
 
-Update your `.env`:
-
+Make sure you create the file inside the container, not just on your host:
+```sh
+docker compose exec web touch /var/www/html/database/database.sqlite
 ```
-DB_CONNECTION=sqlite
-DB_DATABASE=database/database.sqlite
-```
 
-This matches the file path as seen from your host, not from inside the container.
+---
 
-**Tip:** For MySQL, always use Docker and the provided `.env` settings.
-## Useful Docker Commands & Examples
-
-Here are some real-world Docker and Laravel commands used in this project:
-
-- **Start all containers:**
-	```sh
-	docker compose up -d
-	```
-- **Stop all containers:**
-	```sh
-	docker compose down
-	```
-- **Rebuild the web container (after Dockerfile changes):**
-	```sh
-	docker compose build web
-	```
-- **Restart a single container (e.g., phpmyadmin):**
-	```sh
-	docker compose restart phpmyadmin
-	```
-- **View container logs:**
-	```sh
-	docker compose logs -f
-	```
-- **Run Laravel artisan commands:**
-	```sh
-	docker compose exec web php artisan <command>
-	# Example: docker compose exec web php artisan migrate
-	# Example: docker compose exec web php artisan config:clear
-	# Example: docker compose exec web php artisan cache:clear
-	# Example: docker compose exec web php artisan serve --host=0.0.0.0 --port=8000
-	```
-- **Install Composer dependencies:**
-	```sh
-	docker compose exec web composer install
-	```
-- **Access a shell in the web container:**
-	```sh
-	docker compose exec web bash
-	```
-- **Check PHP extensions in the container:**
-	```sh
-	docker compose exec web php -m | grep pdo
-	docker compose exec web php -i | grep -i sqlite
-	```
-- **Check file permissions inside the container:**
-	```sh
-	docker compose exec web ls -l /var/www/html/database/
-	docker compose exec web chmod 664 /var/www/html/database/database.sqlite
-	```
-- **Access phpMyAdmin:**
-	Open [http://127.0.0.1:8081](http://127.0.0.1:8081) in your browser.
-	- Username: root or user
-	- Password: root or pass
-
-These commands cover most development and debugging scenarios for a Laravel project running in Docker.
-## Useful Docker Commands
-
-All commands should be run from the project root.
-
-- **Start all containers:**
-	```sh
-	docker compose up -d
-	```
-- **Stop all containers:**
-	```sh
-	docker compose down
-	```
-- **View container logs:**
-	```sh
-	docker compose logs -f
-	```
-- **Run Laravel artisan commands:**
-	```sh
-	docker compose exec web php artisan <command>
-	# Example: docker compose exec web php artisan migrate
-	```
-- **Install Composer dependencies:**
-	```sh
-	docker compose exec web composer install
-	```
-- **Access a shell in the web container:**
-	```sh
-	docker compose exec web bash
-	```
-- **Access phpMyAdmin:**
-	Open [http://127.0.0.1:8081](http://127.0.0.1:8081) in your browser.
-
-# Laravel REST API Docker Setup
-
-This project is a Laravel 12 REST API running in Docker with MySQL and phpMyAdmin.
-
-## Getting Started
+## 🚀 Quick Start
 
 ### Prerequisites
-- Docker
-- Docker Compose
+- Docker & Docker Compose
 
-### Setup
-1. Clone the repository:
+### Setup Steps
+1. **Clone the repository:**
 	```sh
 	git clone <your-repo-url>
 	cd laravel-restapi
 	```
-2. Copy the example environment file:
+2. **Copy the example environment file:**
 	```sh
 	cp .env.example .env
 	```
-3. Start the containers:
+3. **Start the containers:**
 	```sh
 	docker compose up -d
 	```
-4. Start the Laravel development server:
+4. **Install Composer dependencies:**
+	```sh
+	docker compose exec web composer install
+	```
+5. **Generate the Laravel app key:**
+	```sh
+	docker compose exec web php artisan key:generate
+	```
+6. **Create the database:**
+	- For MySQL (default): No action needed, database is created by Docker.
+	- For SQLite (optional):
+		```sh
+		docker compose exec web touch /var/www/html/database/database.sqlite
+		```
+		Make sure your `.env` has:
+		```
+		DB_CONNECTION=sqlite
+		DB_DATABASE=/var/www/html/database/database.sqlite
+		```
+7. **Run migrations:**
+	```sh
+	docker compose exec web php artisan migrate
+	```
+8. **Start the Laravel development server:**
 	```sh
 	docker compose exec web php artisan serve --host=0.0.0.0 --port=8000
 	```
-5. Visit your app at [http://127.0.0.1:8000](http://127.0.0.1:8000)
+9. **Visit your app:** [http://127.0.0.1:8000](http://127.0.0.1:8000)
 
-### Database
-- MySQL is available at `db:3306` inside Docker.
-- phpMyAdmin is available at [http://127.0.0.1:8081](http://127.0.0.1:8081)
-  - Server: `db`
-  - Username: `user`
-  - Password: `pass`
+---
 
-### Running Migrations
+## 🐳 Useful Docker & Laravel Commands
+
+- Start containers: `docker compose up -d`
+- Stop containers: `docker compose down`
+- View logs: `docker compose logs -f`
+- Run artisan: `docker compose exec web php artisan <command>`
+- Install Composer deps: `docker compose exec web composer install`
+- Shell in container: `docker compose exec web bash`
+- Access phpMyAdmin: [http://127.0.0.1:8081](http://127.0.0.1:8081)
+	- Server: `db` | Username: `user` | Password: `pass`
+
+---
+
+## 🛠️ Troubleshooting
+
+**Missing app key:**
+> Illuminate\Encryption\MissingAppKeyException: No application encryption key has been specified.
+
+Run:
+```sh
+docker compose exec web php artisan key:generate
+```
+
+**SQLite: Database file does not exist**
+> Database file at path [/var/www/html/database/database.sqlite] does not exist.
+
+Run:
+```sh
+docker compose exec web touch /var/www/html/database/database.sqlite
+```
+
+**No such table: sessions (or other table errors)**
+> SQLSTATE[HY000]: General error: 1 no such table: ...
+
+Run migrations:
 ```sh
 docker compose exec web php artisan migrate
 ```
 
-### Useful Commands
-- Clear config cache: `docker compose exec web php artisan config:clear`
-- Clear app cache: `docker compose exec web php artisan cache:clear`
+**File permissions (if you get permission errors):**
+```sh
+docker compose exec web chmod 664 /var/www/html/database/database.sqlite
+```
+
+---
+
+## Database Notes
+
+- **MySQL (default):**
+	- Used in Docker by default. No manual setup needed.
+- **SQLite (optional):**
+	- Good for quick local development. Make sure to create the file inside the container and set the correct path in `.env`.
+	- Example `.env` for SQLite in Docker:
+		```
+		DB_CONNECTION=sqlite
+		DB_DATABASE=/var/www/html/database/database.sqlite
+		```
 
 ---
 
