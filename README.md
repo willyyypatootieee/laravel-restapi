@@ -1,4 +1,3 @@
-
 # Laravel REST API (Dockerized)
 
 This project is a Laravel 12 REST API running in Docker with MySQL and phpMyAdmin. You can also use SQLite for local development.
@@ -128,6 +127,23 @@ docker compose exec web php artisan migrate
 **File permissions (if you get permission errors):**
 ```sh
 docker compose exec web chmod 664 /var/www/html/database/database.sqlite
+```
+
+**MySQL: Database privilege issues**
+If you encounter errors connecting to MySQL or running migrations, ensure the database user has the correct privileges. You can grant privileges by running:
+
+```sh
+docker exec -it laravel-db mysql -u root -p
+# Then in the MySQL shell:
+GRANT ALL PRIVILEGES ON restful_api.* TO 'user'@'%';
+FLUSH PRIVILEGES;
+exit
+```
+
+**Reset config cache and migrations (if migrations or config changes aren't picked up):**
+```sh
+docker exec laravel-web php artisan config:clear
+docker exec laravel-web php artisan migrate:refresh
 ```
 
 ---
