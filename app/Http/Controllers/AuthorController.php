@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Author;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
+use Carbon;
 
 class AuthorController extends Controller
 {
@@ -13,6 +14,8 @@ class AuthorController extends Controller
      */
     public function index()
     {
+
+        // get all authors
     $authors = Author::all();
         if(!empty($authors)) {
             return Response::json(['data' => $authors], 201);
@@ -27,7 +30,21 @@ class AuthorController extends Controller
      */
     public function create()
     {
-        //
+        $data = array();
+        $data['author_name'] = $request->author_name;
+        $data['author_contact_no'] = $request->author_contact_no;
+        $data['author_country'] = $request->author_country;
+        $data['created_at'] = Carbon::now();
+
+        $author =  Author::create($data);
+  
+
+        if($authors) {
+            return Response::json(['message' => 
+        'New Authot Has Been Created Successfully!'], 201);
+    }  else  {
+        return Response::json(['message' => 'Something went wrong...'], 404);
+    }
     }
 
     /**
@@ -44,6 +61,7 @@ class AuthorController extends Controller
     public function show(Author $author)
     {
             
+    // get authors by id
     $authorss = Author::find($author->id);
         if(!empty($authorss)) {
             return Response::json(['data' => $authorss], 201);
