@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Author;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
-use Carbon;
+use Carbon\Carbon;
 
 class AuthorController extends Controller
 {
@@ -30,7 +30,15 @@ class AuthorController extends Controller
      */
     public function create()
     {
-        $data = array();
+
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+               $data = array();
         $data['author_name'] = $request->author_name;
         $data['author_contact_no'] = $request->author_contact_no;
         $data['author_country'] = $request->author_country;
@@ -45,14 +53,6 @@ class AuthorController extends Controller
     }  else  {
         return Response::json(['message' => 'Something went wrong...'], 404);
     }
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
     }
 
     /**
