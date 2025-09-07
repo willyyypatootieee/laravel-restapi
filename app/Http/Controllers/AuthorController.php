@@ -38,20 +38,19 @@ class AuthorController extends Controller
      */
     public function store(Request $request)
     {
-               $data = array();
+        $data = array();
         $data['author_name'] = $request->author_name;
         $data['author_contact_no'] = $request->author_contact_no;
         $data['author_country'] = $request->author_country;
         $data['created_at'] = Carbon::now();
 
-        $author =  Author::create($data);
+        $authors =  Author::create($data);
   
 
         if($authors) {
-            return Response::json(['message' => 
-        'New Authot Has Been Created Successfully!'], 201);
+            return Response::json(['message' => "New Authot Has Been Created Successfully!"], 200);
     }  else  {
-        return Response::json(['message' => 'Something went wrong...'], 404);
+        return Response::json(['message' => "Something went wrong..."], 404);
     }
     }
 
