@@ -1,8 +1,39 @@
 # Laravel REST API (Dockerized)
 
-This project is a Laravel 12 REST API running in Docker with MySQL and phpMyAdmin. You can also use SQLite for local development.
+This project is a Laravel 12 REST API running in Docker with MySQL 5.7 and phpMyAdmin. You can also use SQLite for local development.
 
----
+For enhanced development experience, consider using DBeaver as your database management tool.
+
+
+### 🐬 How to Connect DBeaver or DataGrip to Your MySQL Database
+
+#### MySQL (Docker)
+
+1. **Open DBeaver** or **DataGrip** and click **"New Database Connection"**.
+2. Select **MySQL 8** as the driver (works for MySQL 5.7+).
+3. Enter the following details:
+	- **Host:** `127.0.0.1`
+	- **Port:** `3306`
+	- **Database:** `mydb`
+	- **Username:** `user`
+	- **Password:** `pass`
+4. Click **Test Connection**. If prompted, allow the tool to download the driver.
+5. Click **Finish**.
+
+> **Note:** The MySQL version is 5.7 (see `docker-compose.yml`). The "MySQL 8" driver is compatible and recommended for most clients.
+
+If you cannot connect, see the troubleshooting section below for remote access and privileges.
+
+#### SQLite (Docker)
+
+1. **Open DBeaver** and click **"New Database Connection"**.
+2. Select **SQLite** and click **Next**.
+3. For **Database file**, enter the path inside your project (e.g., `database/database.sqlite`).
+	- If using Docker, copy the file to your host or use a volume mount for access.
+4. Click **Test Connection** and then **Finish**.
+
+> **Tip:** For Docker containers, ensure ports are exposed and the database is accessible from your host.
+
 
 ## 🆕 Fresh Install (SQLite Example)
 
@@ -81,7 +112,7 @@ docker compose exec web touch /var/www/html/database/database.sqlite
 	```sh
 	docker compose exec web php artisan serve --host=0.0.0.0 --port=8000
 	```
-9. **Visit your app:** [http://127.0.0.1:8000](http://127.0.0.1:8000)
+9. **Visit your app:** [http://127.0.0.1:8000](http://127.0.0.1:8000) or [http://localhost:8000](http://localhost:8000)
 
 ---
 
@@ -95,6 +126,7 @@ docker compose exec web touch /var/www/html/database/database.sqlite
 - Shell in container: `docker compose exec web bash`
 - Access phpMyAdmin: [http://127.0.0.1:8081](http://127.0.0.1:8081)
 	- Server: `db` | Username: `user` | Password: `pass`
+	- MySQL version: 5.7
 
 ---
 
@@ -129,13 +161,14 @@ docker compose exec web php artisan migrate
 docker compose exec web chmod 664 /var/www/html/database/database.sqlite
 ```
 
-**MySQL: Database privilege issues**
-If you encounter errors connecting to MySQL or running migrations, ensure the database user has the correct privileges. You can grant privileges by running:
+
+**MySQL: Database privilege issues or remote access (DBeaver/DataGrip cannot connect)**
+If you encounter errors connecting to MySQL or running migrations, or if DBeaver/DataGrip cannot connect, ensure the database user has the correct privileges and can connect from any host. You can grant privileges by running:
 
 ```sh
 docker exec -it laravel-db mysql -u root -p
 # Then in the MySQL shell:
-GRANT ALL PRIVILEGES ON restful_api.* TO 'user'@'%';
+GRANT ALL PRIVILEGES ON mydb.* TO 'user'@'%';
 FLUSH PRIVILEGES;
 exit
 ```
@@ -152,6 +185,9 @@ docker exec laravel-web php artisan migrate:refresh
 
 - **MySQL (default):**
 	- Used in Docker by default. No manual setup needed.
+	- MySQL version: 5.7 (see `docker-compose.yml`)
+	- Use the "MySQL 8" driver in DBeaver/DataGrip for best compatibility.
+	- Database name: `mydb` (see `.env` and `docker-compose.yml`)
 - **SQLite (optional):**
 	- Good for quick local development. Make sure to create the file inside the container and set the correct path in `.env`.
 	- Example `.env` for SQLite in Docker:
