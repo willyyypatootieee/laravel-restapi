@@ -43,7 +43,13 @@ class AuthorController extends Controller
      */
     public function show(Author $author)
     {
-        //
+            
+    $authorss = Author::find($author->id);
+        if(!empty($authorss)) {
+            return Response::json(['data' => $authorss], 201);
+    }  else  {
+        return Response::json(['message' => 'No authors found'], 404);
+    }
     }
 
     /**
