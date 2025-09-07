@@ -48,7 +48,7 @@ class AuthorController extends Controller
   
 
         if($authors) {
-            return Response::json(['message' => "New Authot Has Been Created Successfully!"], 200);
+            return Response::json(['message' => "New Author Has Been Created Successfully!"], 200);
     }  else  {
         return Response::json(['message' => "Something went wrong..."], 404);
     }
