@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Author;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
 
 class AuthorController extends Controller
 {
@@ -12,8 +13,14 @@ class AuthorController extends Controller
      */
     public function index()
     {
-        //
+    $authors = Author::all();
+        if(@empty($authors)) {
+            return Response::json(['data' => $authors], 201);
+    }  else  {
+        return Response::json(['message' => 'No authors found'], 404);
     }
+    }
+    
 
     /**
      * Show the form for creating a new resource.
